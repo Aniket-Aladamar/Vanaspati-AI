@@ -332,7 +332,7 @@ Response: Natural conversational text (no JSON)
 
     try {
       const genAI = initializeGemini();
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
       
       const prompt = getChatPrompt(question, plantData);
       const result = await model.generateContent(prompt);

@@ -25,6 +25,7 @@ import {
 } from '@heroicons/react/24/outline';
 
 const GEMINI_API_KEY = process.env.REACT_APP_GEMINI_API_KEY || '';
+const GEMINI_MODEL = 'gemini-2.5-flash';
 
 export default function ModernPlantScanner() {
   // Basic state
@@ -231,7 +232,7 @@ Response: Natural conversational text (no JSON)
     
     try {
       const genAI = initializeGemini();
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const model = genAI.getGenerativeModel({ model: GEMINI_MODEL });
       
       const imagePart = await fileToGenerativePart(imageFile);
       const prompt = getPlantPrompt();
@@ -332,7 +333,7 @@ Response: Natural conversational text (no JSON)
 
     try {
       const genAI = initializeGemini();
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      const model = genAI.getGenerativeModel({ model: GEMINI_MODEL });
       
       const prompt = getChatPrompt(question, plantData);
       const result = await model.generateContent(prompt);

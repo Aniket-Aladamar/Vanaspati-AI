@@ -7,6 +7,8 @@ import { useDropzone } from 'react-dropzone';
 import toast, { Toaster } from 'react-hot-toast';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { track } from '@vercel/analytics';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { 
   CameraIcon, 
   DocumentArrowUpIcon, 
@@ -1014,7 +1016,37 @@ Response: Natural conversational text (no JSON)
                                 ? 'bg-primary-600 text-white' 
                                 : darkMode ? 'bg-gray-600 text-gray-100' : 'bg-white text-gray-800'
                             }`}>
-                              <p className="text-sm">{message.content}</p>
+                              {message.type === 'ai' ? (
+                                <div className="text-sm leading-relaxed whitespace-normal">
+                                  <ReactMarkdown
+                                    remarkPlugins={[remarkGfm]}
+                                    components={{
+                                      p: ({ node, ...props }) => <p className="mb-2 last:mb-0" {...props} />,
+                                      ul: ({ node, ...props }) => <ul className="mb-2 list-disc pl-5" {...props} />,
+                                      ol: ({ node, ...props }) => <ol className="mb-2 list-decimal pl-5" {...props} />,
+                                      li: ({ node, ...props }) => <li className="mb-1 last:mb-0" {...props} />,
+                                      strong: ({ node, ...props }) => <strong className="font-semibold" {...props} />,
+                                      em: ({ node, ...props }) => <em className="italic" {...props} />,
+                                      a: ({ node, children, ...props }) => (
+                                        <a className="underline text-primary-500 break-words" target="_blank" rel="noreferrer" {...props}>
+                                          {children}
+                                        </a>
+                                      ),
+                                      code: ({ node, inline, ...props }) =>
+                                        inline ? (
+                                          <code className={`px-1 py-0.5 rounded ${darkMode ? 'bg-gray-800 text-pink-300' : 'bg-gray-100 text-pink-600'}`} {...props} />
+                                        ) : (
+                                          <code className={`block whitespace-pre-wrap rounded p-3 overflow-x-auto ${darkMode ? 'bg-gray-800 text-gray-100' : 'bg-gray-100 text-gray-800'}`} {...props} />
+                                        ),
+                                      pre: ({ node, ...props }) => <pre className="mb-2 overflow-x-auto rounded" {...props} />,
+                                    }}
+                                  >
+                                    {message.content}
+                                  </ReactMarkdown>
+                                </div>
+                              ) : (
+                                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                              )}
                               {message.type === 'ai' && (
                                 <motion.button
                                   whileHover={{ scale: 1.1 }}
